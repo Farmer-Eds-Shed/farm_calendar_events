@@ -1,0 +1,7 @@
+name: Farm Calendar events
+description: Notifys Calendar events to Google Calendars.
+type: module
+package: farmOS Contrib
+core_version_requirement: ^9
+dependencies:
+

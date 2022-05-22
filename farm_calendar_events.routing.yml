@@ -1,0 +1,7 @@
+farm_calendar_events.settings:
+  path: 'farm/settings/farm_calendar_events'
+  defaults:
+    _form: '\Drupal\farm_calendar_events\Form\FarmCalendarEventsSettingsForm'
+    _title: 'Calendar settings'
+  requirements:
+    _permission: 'administer'

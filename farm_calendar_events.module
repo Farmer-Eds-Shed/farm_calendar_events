@@ -1,0 +1,116 @@
+<?php
+
+/**
+ * @file
+ * Contains farm_calendar.module.
+ */
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\EntityTypeInterface;
+
+/**
+ * Implements hook_ENTITY_TYPE_update().
+ */
+
+
+function farm_calendar_events_log_update(EntityInterface $entity) {
+
+	//log variables		
+	$name = $entity->label();
+	$status = $entity->status->value;
+	$notes = $entity->notes->value;
+	$timestamp = $entity->timestamp->value;
+	
+	//settings variables
+	$calendar_id = \Drupal::config('farm_calendar_events.settings')->get('calendar_id');
+
+    // Google api client
+	$google_api_client = \Drupal::entityTypeManager()->getStorage('google_api_client')->load(1);
+	$googleService = \Drupal::service('google_api_client.client');
+	$googleService->setGoogleApiClient($google_api_client);
+	
+	//check for expired token
+	if ($googleService->googleClient->isAccessTokenExpired()) {
+    // Refresh the access token using refresh token.
+        try {
+			$credentials = $googleService->getAccessTokenWithRefreshToken();
+		}
+		catch (Exception $e) {
+			\Drupal::logger('farm_calendar')->error($e->getMessage());
+		}
+	} else{
+	// Fetch Access Token
+		try {
+			$credentials = $googleService->googleClient->getAccessToken();
+		}
+		catch (Exception $e) {
+			\Drupal::logger('farm_calendar')->error($e->getMessage());
+		}
+	}
+		
+	$access_token = $credentials['access_token'];
+	$bearer = "Bearer $access_token";
+	
+	//Create httpClient.	
+	$client = \Drupal::httpClient();
+
+
+	$dt = new DateTime("@$timestamp");
+	$datetime = $dt->format('Y-m-d');
+	
+	//JSON
+	$json_data = json_encode(array(
+		"end" => array("date" => $datetime),
+		"start" => array("date" => $datetime),
+		"description" => $notes,
+		"summary" => $name,
+	));
+	
+  	try {
+		//Sending POST Request with $json_data to external server
+		$request = $client->post("https://www.googleapis.com/calendar/v3/calendars/$calendar_id/events", 
+			['body' => $json_data, 
+			'headers' => 
+				['Authorization' => $bearer,],
+				['Accept' => "application/json"],
+				]);
+		//Getting Response after JSON Decode.
+		$response = json_decode($request->getBody());
+	} 
+	//Catch http exceptions and log errors
+	catch (\Exception $e) {
+		\Drupal::logger('farm_calendar')->error($e->getMessage());
+	}
+		}
+		
+
+
+/**
+ * Implements hook_entity_base_field_info().
+ * NOTE: Replace 'mymodule' with the module name.
+ */
+function farm_calendar_events_entity_base_field_info(EntityTypeInterface $entity_type) {
+  $fields = [];
+
+  // 'log' specifies the entity type to apply to.
+  if ($entity_type->id() == 'log') {
+    // Options for the new field. See Field options below.
+    $options = [
+      'type' => 'boolean',
+      'label' => t('Calendar Event'),
+      'description' => t('Create calendar event for this log.'),
+	  'settings' => [
+        'format' => 'default',
+        'format_custom_false' => '',
+        'format_custom_true' => '',
+      ],
+      'weight' => [
+        'form' => 10,
+        'view' => 10,
+      ],
+    ];
+    // NOTE: Replace 'myfield' with the internal name of the field.
+    $fields['calendar'] = \Drupal::service('farm_field.factory')->baseFieldDefinition($options)->setInitialValue(['value' => 1, 'format' => 'default']);
+  }
+
+  return $fields;
+}
