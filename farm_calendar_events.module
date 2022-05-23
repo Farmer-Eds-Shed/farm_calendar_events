@@ -19,6 +19,7 @@ function farm_calendar_events_log_update(EntityInterface $entity) {
 	$status = $entity->status->value;
 	$notes = $entity->notes->value;
 	$timestamp = $entity->timestamp->value;
+	$cal = $entity->calendar->value;
 	
 	//settings variables
 	$calendar_id = \Drupal::config('farm_calendar_events.settings')->get('calendar_id');
@@ -28,60 +29,61 @@ function farm_calendar_events_log_update(EntityInterface $entity) {
 	$googleService = \Drupal::service('google_api_client.client');
 	$googleService->setGoogleApiClient($google_api_client);
 	
-	//check for expired token
-	if ($googleService->googleClient->isAccessTokenExpired()) {
-    // Refresh the access token using refresh token.
-        try {
-			$credentials = $googleService->getAccessTokenWithRefreshToken();
-		}
-		catch (Exception $e) {
+	if (($cal == "0") || ($cal == "1" && $status =="pending") ||$cal == "2" && $status =="done" ){
+		//check for expired token
+		if ($googleService->googleClient->isAccessTokenExpired()) {
+		// Refresh the access token using refresh token.
+			try {
+				$credentials = $googleService->getAccessTokenWithRefreshToken();
+			}
+			catch (Exception $e) {
 			\Drupal::logger('farm_calendar')->error($e->getMessage());
+			}
+		} else{
+		// Fetch Access Token
+			try {
+				$credentials = $googleService->googleClient->getAccessToken();
+			}
+			catch (Exception $e) {
+				\Drupal::logger('farm_calendar')->error($e->getMessage());
+			}
 		}
-	} else{
-	// Fetch Access Token
+		
+		$access_token = $credentials['access_token'];
+		$bearer = "Bearer $access_token";
+	
+		//Create httpClient.	
+		$client = \Drupal::httpClient();
+
+
+		$dt = new DateTime("@$timestamp");
+		$datetime = $dt->format('Y-m-d');
+	
+		//JSON
+		$json_data = json_encode(array(
+			"end" => array("date" => $datetime),
+			"start" => array("date" => $datetime),
+			"description" => $notes,
+			"summary" => $name,
+		));
+	
 		try {
-			$credentials = $googleService->googleClient->getAccessToken();
-		}
-		catch (Exception $e) {
+			//Sending POST Request with $json_data to external server
+			$request = $client->post("https://www.googleapis.com/calendar/v3/calendars/$calendar_id/events", 
+				['body' => $json_data, 
+				'headers' => 
+					['Authorization' => $bearer,],
+					['Accept' => "application/json"],
+					]);
+			//Getting Response after JSON Decode.
+			$response = json_decode($request->getBody());
+		} 
+		//Catch http exceptions and log errors
+		catch (\Exception $e) {
 			\Drupal::logger('farm_calendar')->error($e->getMessage());
 		}
 	}
-		
-	$access_token = $credentials['access_token'];
-	$bearer = "Bearer $access_token";
-	
-	//Create httpClient.	
-	$client = \Drupal::httpClient();
-
-
-	$dt = new DateTime("@$timestamp");
-	$datetime = $dt->format('Y-m-d');
-	
-	//JSON
-	$json_data = json_encode(array(
-		"end" => array("date" => $datetime),
-		"start" => array("date" => $datetime),
-		"description" => $notes,
-		"summary" => $name,
-	));
-	
-  	try {
-		//Sending POST Request with $json_data to external server
-		$request = $client->post("https://www.googleapis.com/calendar/v3/calendars/$calendar_id/events", 
-			['body' => $json_data, 
-			'headers' => 
-				['Authorization' => $bearer,],
-				['Accept' => "application/json"],
-				]);
-		//Getting Response after JSON Decode.
-		$response = json_decode($request->getBody());
-	} 
-	//Catch http exceptions and log errors
-	catch (\Exception $e) {
-		\Drupal::logger('farm_calendar')->error($e->getMessage());
-	}
-		}
-		
+}	
 
 
 /**
@@ -95,21 +97,22 @@ function farm_calendar_events_entity_base_field_info(EntityTypeInterface $entity
   if ($entity_type->id() == 'log') {
     // Options for the new field. See Field options below.
     $options = [
-      'type' => 'boolean',
-      'label' => t('Calendar Event'),
-      'description' => t('Create calendar event for this log.'),
-	  'settings' => [
-        'format' => 'default',
-        'format_custom_false' => '',
-        'format_custom_true' => '',
+      'type' => 'list_string',
+      'label' => t('Add to Calendar'),
+      'description' => t('Send updates to calendar this log.'),
+      'allowed_values' => [
+        0 => t('All'),
+		1 => t('Pending'),
+		2 => t('Done')
       ],
+	 // 'default_value' => 0,
       'weight' => [
         'form' => 10,
         'view' => 10,
       ],
     ];
-    // NOTE: Replace 'myfield' with the internal name of the field.
-    $fields['calendar'] = \Drupal::service('farm_field.factory')->baseFieldDefinition($options)->setInitialValue(['value' => 1, 'format' => 'default']);
+    //Define field
+    $fields['calendar'] = \Drupal::service('farm_field.factory')->baseFieldDefinition($options);
   }
 
   return $fields;
