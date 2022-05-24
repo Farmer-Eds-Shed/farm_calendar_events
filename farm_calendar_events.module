@@ -77,10 +77,12 @@ function farm_calendar_events_log_update(EntityInterface $entity) {
 					]);
 			//Getting Response after JSON Decode.
 			$response = json_decode($request->getBody());
+			\Drupal::messenger()->addStatus(t("Log: $name sent to calendar"));
 		} 
 		//Catch http exceptions and log errors
 		catch (\Exception $e) {
 			\Drupal::logger('farm_calendar')->error($e->getMessage());
+			\Drupal::messenger()->addError(t("Log: $name failed to add calendar event"));
 		}
 	}
 }	
@@ -88,7 +90,6 @@ function farm_calendar_events_log_update(EntityInterface $entity) {
 
 /**
  * Implements hook_entity_base_field_info().
- * NOTE: Replace 'mymodule' with the module name.
  */
 function farm_calendar_events_entity_base_field_info(EntityTypeInterface $entity_type) {
   $fields = [];
