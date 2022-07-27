@@ -47,6 +47,13 @@ class FarmCalendarEventsSettingsForm extends ConfigFormbase {
 	  '#default_value' => $config->get('calendar_id'),
     ];
 	
+	    // Add the grafana_url option.
+    $form['calendar_url'] = [
+      '#type' => 'url',
+      '#title' => $this->t('Calendar URL'),
+      '#description' => $this->t('Used to show a Google Calendar, when clicking the sidebar.'),
+      '#default_value' => $config->get('calendar_url'),
+    ];
 
     return parent::buildForm($form, $form_state);
   }
@@ -57,7 +64,8 @@ class FarmCalendarEventsSettingsForm extends ConfigFormbase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->configFactory->getEditable(static::SETTINGS)
 	  ->set('calendar_id', $form_state->getValue('calendar_id'))
-      ->save();
+      ->set('calendar_url', $form_state->getValue('calendar_url'))
+	  ->save();
 
     parent::submitForm($form, $form_state);
   }

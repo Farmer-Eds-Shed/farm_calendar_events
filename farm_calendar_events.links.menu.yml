@@ -1,0 +1,5 @@
+farm_calendar_events:
+  title: Calendar
+  parent: farm.base
+  route_name: farm_calendar_events.full_view
+  weight: 100

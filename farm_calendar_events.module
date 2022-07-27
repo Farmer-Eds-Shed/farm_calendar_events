@@ -8,6 +8,20 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 
 /**
+ * Implements hook_theme().
+ */
+function farm_calendar_events_theme() {
+  return array(
+    'farm_calendar_events_full_view' => array(
+      'variables' => array('url' => NULL),
+    ),
+  );
+}
+
+
+
+
+/**
  * Implements hook_ENTITY_TYPE_update().
  */
 

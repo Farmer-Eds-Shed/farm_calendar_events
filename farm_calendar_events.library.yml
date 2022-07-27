@@ -1,0 +1,5 @@
+farm_calendar_events_toolbar:
+  version: 1.x
+  css:
+    theme:
+      css/toolbar.css: { }
