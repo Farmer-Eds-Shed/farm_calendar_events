@@ -11,4 +11,6 @@ Radio buttons added to logs to select if logs should be added to calendar based 
 
 ![image](https://user-images.githubusercontent.com/63633329/169898173-060fbe5e-ccf8-4b48-9233-acb34cfeb08c.png)
 
+![image](https://user-images.githubusercontent.com/63633329/181728656-84d751b6-45db-49f5-9aae-0c7d2af8efbb.gif)
+
 Module is dependant on Drupal Google API PHP Client https://www.drupal.org/project/google_api_client for Google Oath2 Authentication.
