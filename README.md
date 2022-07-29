@@ -3,6 +3,9 @@ Google Calendar module for farmOS
 
 Module creates Google Calendar events from logs.
 
+Calendar iframe on Toolbar
+![image](https://user-images.githubusercontent.com/63633329/181729337-a0237376-8267-44fa-b33f-f9f6b4162e44.png)
+
 Calendar ID field added to settings menu.
 
 ![image](https://user-images.githubusercontent.com/63633329/169897971-9135347c-1d28-4e10-a800-537332a6621e.png)
