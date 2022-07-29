@@ -35,6 +35,7 @@ function farm_calendar_events_log_update(EntityInterface $entity) {
 	$timestamp = $entity->timestamp->value;
 	$cal = $entity->calendar->value;
 	$uuid = $entity->uuid();
+	$location = $entity->geometry->latlon;
 	
 	//remove dashes from farmOS UUID to make a valid Google event ID
 	$eventid	= str_replace("-", "", $uuid);
@@ -80,14 +81,22 @@ function farm_calendar_events_log_update(EntityInterface $entity) {
 		$dt = new DateTime("@$timestamp");
 		$datetime = $dt->format('Y-m-d');
 	
+		if ($status == "done") {
+			$colorId = 10;
+			}
+		if ($status == "pending") {
+			$colorId = 6;
+			}	
+		
 		//JSON
 		$json_data = json_encode(array(
 			"end" => array("date" => $datetime),
 			"start" => array("date" => $datetime),
 			"description" => $notes,
 			"summary" => $name,
-			"id" => $eventid
-			
+			"id" => $eventid,
+			"colorId" => $colorId,
+			"location" => $location
 		));
 	
 		try {
@@ -245,7 +254,7 @@ function farm_calendar_events_entity_base_field_info(EntityTypeInterface $entity
       'label' => t('Update Calendar'),
       'description' => t('Send updates to calendar for this log.'),
       'allowed_values' => [
-        0 => t('Update'),
+        0 => t('On Add/Update'),
 		1 => t('If Pending'),
 		2 => t('If Done'),
 		3 => t('Remove')
