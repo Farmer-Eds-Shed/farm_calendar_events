@@ -1,7 +1,13 @@
 # farm_calendar_events
 Google Calendar module for farmOS 
 
-Module creates Google Calendar events from logs.
+Module creates Google Calendar events from logs, including:
+
+1. Log Date
+1. Log Name
+1. Log Notes
+1. Location
+1. Color Coding, green = done, orange = pending
 
 Calendar iframe on Toolbar
 ![image](https://user-images.githubusercontent.com/63633329/181729337-a0237376-8267-44fa-b33f-f9f6b4162e44.png)
