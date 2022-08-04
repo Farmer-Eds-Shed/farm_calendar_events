@@ -12,7 +12,7 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/Farmer-Eds-Shed/farm_calendar_events.git"
+            "url": "https://github.com/farmer-eds-shed/farm_calendar_events.git"
         }
     ],
     "require": {
