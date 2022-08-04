@@ -1,0 +1,21 @@
+{
+    "name": "Farmer-Eds-Shed/farm_calendar_events",
+    "description": "Provides a farmOS profile type for logging calendar events.",
+    "type": "drupal-module",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Eddie Maher",
+            "email": "farmer.eds.shed@gmail.com"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/Farmer-Eds-Shed/farm_calendar_events.git"
+        }
+    ],
+    "require": {
+       "drupal/google_api_client": "^4.2"
+    }
+}
