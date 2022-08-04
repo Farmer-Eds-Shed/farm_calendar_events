@@ -1,5 +1,5 @@
 {
-    "name": "Farmer-Eds-Shed/farm_calendar_events",
+    "name": "farmer-eds-shed/farm_calendar_events",
     "description": "Provides a farmOS profile type for logging calendar events.",
     "type": "drupal-module",
     "license": "GPL-2.0-or-later",
