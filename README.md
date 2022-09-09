@@ -26,8 +26,7 @@ Module is dependant on Drupal Google API PHP Client https://www.drupal.org/proje
 
 See Also:
 
-1. https://www.drupal.org/docs/contributed-modules/google-api-php-client/google-api-console-configurations
-1. https://www.drupal.org/docs/contributed-modules/google-api-php-client/installation-and-configuration
+https://www.drupal.org/docs/contributed-modules/google-api-php-client/installation-and-configuration
 
 #### Install Farm Calendar Module:
 
@@ -52,6 +51,7 @@ Calandar details need to be added to farm calendar `/farm/settings/farm_calendar
 
 Google API Credentials need to be added Google API Client `/admin/config/services/google_api_client`
 #### Note: Credentials must be authenticated
+https://www.drupal.org/docs/contributed-modules/google-api-php-client/google-api-console-configurations
 ![image](https://user-images.githubusercontent.com/63633329/189284684-6968c7c2-1242-4df9-84bd-eae01961838b.png)
 
 <!---
