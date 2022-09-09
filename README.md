@@ -52,6 +52,7 @@ Calandar details need to be added to farm calendar `/farm/settings/farm_calendar
 
 Google API Credentials need to be added Google API Client `/admin/config/services/google_api_client`
 #### Note: Credentials must be authenticated
+![image](https://user-images.githubusercontent.com/63633329/189284684-6968c7c2-1242-4df9-84bd-eae01961838b.png)
 
 <!---
 Document features the module provides.
