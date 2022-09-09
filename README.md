@@ -18,10 +18,6 @@ Document installation steps.
 -->
 ### Installation
 
-Module is dependant on Drupal Google API PHP Client https://www.drupal.org/project/google_api_client for Google Oath2 Authentication.
-Install: $ composer require 'drupal/google_api_client:^4.2'
-
-
 1. Download the repo, either by cloning it or by using the "Download as Zip" function from GitHub. 
 1. Copy the folder (farm_calendar_events) (!not the zip) into `/www/web/sites/all/modules/farm/`.
 1. Open your farmOS instance online. Go to `Administration -> Extend`. 
@@ -29,6 +25,8 @@ Install: $ composer require 'drupal/google_api_client:^4.2'
 1. Select it by clicking the checkbox and scroll down to the bottom of the page and hit `Install`
 1. Finished
 
+Module is dependant on Drupal Google API PHP Client https://www.drupal.org/project/google_api_client for Google Oath2 Authentication.
+Install: $ composer require 'drupal/google_api_client:^4.2'
 
 <!---
 Document any special configuration the module requires. For example:
