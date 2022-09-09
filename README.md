@@ -50,8 +50,9 @@ Document any special configuration the module requires. For example:
 Calandar details need to be added to farm calendar `/farm/settings/farm_calendar_events`
 
 Google API Credentials need to be added Google API Client `/admin/config/services/google_api_client`
-#### Note: Credentials must be authenticated
 https://www.drupal.org/docs/contributed-modules/google-api-php-client/google-api-console-configurations
+#### Note: Credentials must be authenticated
+
 ![image](https://user-images.githubusercontent.com/63633329/189284684-6968c7c2-1242-4df9-84bd-eae01961838b.png)
 
 <!---
