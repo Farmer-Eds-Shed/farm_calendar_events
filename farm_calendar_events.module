@@ -79,7 +79,9 @@ function farm_calendar_events_log_update(EntityInterface $entity) {
 	if (($cal == "0") || ($cal == "1" && $status =="pending") ||$cal == "2" && $status =="done" ){
 
 		$dt = new DateTime("@$timestamp");
-		$datetime = $dt->format('Y-m-d');
+		$startdate = $dt->format('Y-m-d');
+		$dt->modify('+1 day');
+		$enddate = $dt->format('Y-m-d');
 	
 		if ($status == "done") {
 			$colorId = 10;
@@ -90,8 +92,8 @@ function farm_calendar_events_log_update(EntityInterface $entity) {
 		
 		//JSON
 		$json_data = json_encode(array(
-			"end" => array("date" => $datetime),
-			"start" => array("date" => $datetime),
+			"end" => array("date" => $enddate),
+			"start" => array("date" => $startdate),
 			"description" => $notes,
 			"summary" => $name,
 			"id" => $eventid,
@@ -114,7 +116,7 @@ function farm_calendar_events_log_update(EntityInterface $entity) {
 		//Catch http exceptions and log errors
 		catch (\Exception $e) {
 			if (str_contains($e, '409')) { 
-				//\Drupal::messenger()->addError(t("This could work yet"));
+
 				
 						try {
 							//Sending POST Request with $json_data to external server
