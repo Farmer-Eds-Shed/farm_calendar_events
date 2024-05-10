@@ -82,7 +82,7 @@ Module creates Google Calendar events from logs, including:
 
 ### Logs
 Adds Radio butons to all log types:
-1. On Add/Update - Updates calendar on save regardless of status 
+1. On Update - Updates calendar on save regardless of status 
 1. If Pending - Updates calendar only if saved with status "Pending"
 1. If Done - Updates calendar only if saved with status "Done"
 1. Remove - Removes any calendar entries on save

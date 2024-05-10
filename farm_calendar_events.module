@@ -18,8 +18,151 @@ function farm_calendar_events_theme() {
   );
 }
 
+/**
+ * Implements hook_ENTITY_TYPE_insert().
+ */
 
 
+function farm_calendar_events_log_insert(EntityInterface $entity) {
+
+	//log variables
+	$name = $entity->label();
+	$status = $entity->status->value;
+	$notes = $entity->notes->value;
+	$timestamp = $entity->timestamp->value;
+	$cal = $entity->calendar->value;
+	$uuid = $entity->uuid();
+	$location = $entity->geometry->latlon;
+
+	//remove dashes from farmOS UUID to make a valid Google event ID
+	$eventid	= str_replace("-", "", $uuid);
+
+	//settings variables
+	$calendar_id = \Drupal::config('farm_calendar_events.settings')->get('calendar_id');
+
+
+    // Google api client
+	$google_api_client = \Drupal::entityTypeManager()->getStorage('google_api_client')->load(1);
+	$googleService = \Drupal::service('google_api_client.client');
+	$googleService->setGoogleApiClient($google_api_client);
+
+
+	if ($cal == "0" || $cal == "1" || $cal == "2" || $cal == "3") {
+		//check for expired token
+		if ($googleService->googleClient->isAccessTokenExpired()) {
+		// Refresh the access token using refresh token.
+			try {
+				$credentials = $googleService->getAccessTokenWithRefreshToken();
+			}
+			catch (Exception $e) {
+			\Drupal::logger('farm_calendar')->error($e->getMessage());
+			}
+		} else{
+		// Fetch Access Token
+			try {
+				$credentials = $googleService->googleClient->getAccessToken();
+			}
+			catch (Exception $e) {
+				\Drupal::logger('farm_calendar')->error($e->getMessage());
+			}
+		}
+
+		$access_token = $credentials['access_token'];
+		$bearer = "Bearer $access_token";
+
+		//Create httpClient.
+		$client = \Drupal::httpClient();
+
+	if (($cal == "0") || ($cal == "1" && $status =="pending") ||$cal == "2" && $status =="done" ){
+
+		$dt = new DateTime("@$timestamp");
+		$startdate = $dt->format('Y-m-d');
+		$dt->modify('+1 day');
+		$enddate = $dt->format('Y-m-d');
+
+		if ($status == "done") {
+			$colorId = 10;
+			}
+		if ($status == "pending") {
+			$colorId = 6;
+			}
+
+		//JSON
+		$json_data = json_encode(array(
+			"end" => array("date" => $enddate),
+			"start" => array("date" => $startdate),
+			"description" => $notes,
+			"summary" => $name,
+			"id" => $eventid,
+			"colorId" => $colorId,
+			"location" => $location
+		));
+
+		try {
+			//Sending POST Request with $json_data to external server
+			$request = $client->post("https://www.googleapis.com/calendar/v3/calendars/$calendar_id/events",
+				['body' => $json_data,
+				'headers' =>
+					['Authorization' => $bearer,],
+					['Accept' => "application/json"],
+					]);
+			//Getting Response after JSON Decode.
+			$response = json_decode($request->getBody());
+			\Drupal::messenger()->addStatus(t("Log: $name sent to calendar"));
+		}
+		//Catch http exceptions and log errors
+		catch (\Exception $e) {
+			if (str_contains($e, '409')) {
+
+
+						try {
+							//Sending POST Request with $json_data to external server
+							$request = $client->put("https://www.googleapis.com/calendar/v3/calendars/$calendar_id/events/$eventid",
+								['body' => $json_data,
+								'headers' =>
+									['Authorization' => $bearer,],
+									['Accept' => "application/json"],
+									]);
+							//Getting Response after JSON Decode.
+							$response = json_decode($request->getBody());
+							\Drupal::messenger()->addStatus(t("Log: $name sent to calendar"));
+						}
+						//Catch http exceptions and log errors
+						catch (\Exception $e) {
+							\Drupal::logger('farm_calendar')->error($e->getResponse()->getBody()->getContents());
+							\Drupal::messenger()->addError(t("Log: $name failed to add calendar event"));
+						}
+				}
+            else{
+			\Drupal::logger('farm_calendar')->error($e->getResponse()->getBody()->getContents());
+			\Drupal::messenger()->addError(t("Log: $name failed to add calendar event"));
+			}
+		}
+	}
+
+
+	if ($cal == "3"){
+			try {
+			//Sending delete Request  to external server
+			$request = $client->delete("https://www.googleapis.com/calendar/v3/calendars/$calendar_id/events/$eventid",
+								['headers' =>
+									['Authorization' => $bearer,],
+									['Accept' => "application/json"],
+									]);
+			//Getting Response after JSON Decode.
+			$response = json_decode($request->getBody());
+			\Drupal::messenger()->addStatus(t("Log: $name removed from calendar"));
+		}
+		//Catch http exceptions and log errors
+		catch (\Exception $e) {
+
+			\Drupal::logger('farm_calendar')->error($e->getResponse()->getBody()->getContents());
+			\Drupal::messenger()->addError(t("No Log: $name found to remove from calendar"));
+			}
+		}
+
+	}
+}
 
 /**
  * Implements hook_ENTITY_TYPE_update().
@@ -256,7 +399,7 @@ function farm_calendar_events_entity_base_field_info(EntityTypeInterface $entity
       'label' => t('Update Calendar'),
       'description' => t('Send updates to calendar for this log.'),
       'allowed_values' => [
-        0 => t('On Add/Update'),
+        0 => t('On Update'),
 		1 => t('If Pending'),
 		2 => t('If Done'),
 		3 => t('Remove')
