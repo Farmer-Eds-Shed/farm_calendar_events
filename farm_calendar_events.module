@@ -243,9 +243,9 @@ function farm_calendar_events_log_delete(EntityInterface $entity) {
 
 
 /**
- * Implements hook_entity_base_field_info().
+ * Implements hook_farm_entity_bundle_field_info().
  */
-function farm_calendar_events_entity_base_field_info(EntityTypeInterface $entity_type) {
+function farm_calendar_events_farm_entity_bundle_field_info(EntityTypeInterface $entity_type) {
   $fields = [];
 
   // 'log' specifies the entity type to apply to.
@@ -268,7 +268,7 @@ function farm_calendar_events_entity_base_field_info(EntityTypeInterface $entity
       ],
     ];
     //Define field
-    $fields['calendar'] = \Drupal::service('farm_field.factory')->baseFieldDefinition($options);
+    $fields['calendar'] = \Drupal::service('farm_field.factory')->bundleFieldDefinition($options);
   }
 
   return $fields;
