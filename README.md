@@ -20,8 +20,9 @@ Document installation steps.
 
 Module is dependant on Drupal Google API PHP Client https://www.drupal.org/project/google_api_client for Google Oath2 Authentication.
 
+
 #### Install Google API Client: 
-1. `$ composer require 'drupal/google_api_client:^4.3'` 
+1. `$ composer require 'drupal/google_api_client:^4.3'`
 2. `$ drush en google_api_client`
 
 See Also:
@@ -30,9 +31,9 @@ https://www.drupal.org/docs/contributed-modules/google-api-php-client/installati
 
 #### Install Farm Calendar Module:
 
-1. Download the repo, either by cloning it or by using the "Download as Zip" function from GitHub. 
+1. Download the repo, either by cloning it or by using the "Download as Zip" function from GitHub.
 1. Copy the folder (farm_calendar_events) (!not the zip) into `/www/web/sites/all/modules/farm/`.
-1. Open your farmOS instance online. Go to `Administration -> Extend`. 
+1. Open your farmOS instance online. Go to `Administration -> Extend`.
 1. Search for "calendar".
 1. Select it by clicking the checkbox and scroll down to the bottom of the page and hit `Install`
 1. Finished
@@ -82,7 +83,7 @@ Module creates Google Calendar events from logs, including:
 
 ### Logs
 Adds Radio butons to all log types:
-1. On Add/Update - Updates calendar on save regardless of status 
+1. On Add/Update - Updates calendar on save regardless of status
 1. If Pending - Updates calendar only if saved with status "Pending"
 1. If Done - Updates calendar only if saved with status "Done"
 1. Remove - Removes any calendar entries on save
