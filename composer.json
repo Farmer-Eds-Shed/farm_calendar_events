@@ -16,6 +16,6 @@
         }
     ],
     "require": {
-       "drupal/google_api_client": "^4.2"
+       "drupal/google_api_client": "^4.3"
     }
 }

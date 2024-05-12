@@ -20,8 +20,9 @@ Document installation steps.
 
 Module is dependant on Drupal Google API PHP Client https://www.drupal.org/project/google_api_client for Google Oath2 Authentication.
 
-#### Install Google API Client:
-1. `$ composer require 'drupal/google_api_client:^4.2'`
+
+#### Install Google API Client: 
+1. `$ composer require 'drupal/google_api_client:^4.3'`
 2. `$ drush en google_api_client`
 
 See Also:
