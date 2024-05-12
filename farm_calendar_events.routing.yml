@@ -1,9 +1,9 @@
 farm_calendar_events.full_view:
-  path: '/calendar' 
-  defaults: 
-    _controller: '\Drupal\farm_calendar_events\Controller\FarmCalendarEventsController::fullView' 
+  path: '/calendar'
+  defaults:
+    _controller: '\Drupal\farm_calendar_events\Controller\FarmCalendarEventsController::fullView'
     _title: 'Calendar'
-  requirements: 
+  requirements:
     _permission: 'access content'
 
 farm_calendar_events.settings:
@@ -13,4 +13,4 @@ farm_calendar_events.settings:
     _title: 'Calendar settings'
   requirements:
     _permission: 'administer'
-    
+
