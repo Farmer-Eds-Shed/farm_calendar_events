@@ -39,14 +39,14 @@ class FarmCalendarEventsSettingsForm extends ConfigFormbase {
   public function buildForm(array $form, FormStateinterface $form_state) {
     $config = $this->config(static::SETTINGS);
 
-	
+
 	$form['calendar_id'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Calendar ID'),
       '#description' => $this->t('Enter Calendar ID.'),
 	  '#default_value' => $config->get('calendar_id'),
     ];
-	
+
 	    // Add the grafana_url option.
     $form['calendar_url'] = [
       '#type' => 'url',
