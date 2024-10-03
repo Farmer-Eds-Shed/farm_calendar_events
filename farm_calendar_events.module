@@ -30,7 +30,7 @@ function farm_calendar_events_log_insert(EntityInterface $entity) {
 	$status = $entity->status->value;
 	$notes = $entity->notes->value;
 	$timestamp = $entity->timestamp->value;
-	$cal = $entity->calendar->value;
+	$cal = $entity->calendar_update->value;
 	$uuid = $entity->uuid();
 	$location = $entity->geometry->latlon;
 
@@ -176,7 +176,7 @@ function farm_calendar_events_log_update(EntityInterface $entity) {
 	$status = $entity->status->value;
 	$notes = $entity->notes->value;
 	$timestamp = $entity->timestamp->value;
-	$cal = $entity->calendar->value;
+	$cal = $entity->calendar_update->value;
 	$uuid = $entity->uuid();
 	$location = $entity->geometry->latlon;
 
@@ -318,7 +318,7 @@ function farm_calendar_events_log_delete(EntityInterface $entity) {
 
 	//log variables
 	$name = $entity->label();
-	$cal = $entity->calendar->value;
+	$cal = $entity->calendar_update->value;
 	$uuid = $entity->uuid();
 
 	//remove dashes from farmOS UUID to make a valid Google event ID
@@ -411,7 +411,7 @@ function farm_calendar_events_farm_entity_bundle_field_info(EntityTypeInterface 
       ],
     ];
     //Define field
-    $fields['calendar'] = \Drupal::service('farm_field.factory')->bundleFieldDefinition($options);
+    $fields['calendar_update'] = \Drupal::service('farm_field.factory')->bundleFieldDefinition($options);
   }
 
   return $fields;
