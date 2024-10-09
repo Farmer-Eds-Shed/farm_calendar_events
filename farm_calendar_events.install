@@ -1,0 +1,53 @@
+<?php
+
+/**
+ * @file
+ * Contains farm_calendar.install.
+ */
+
+/**
+ * Implements hook_update_N().
+ */
+
+function farm_calendar_events_update_100301() {
+   //Set calendar_update bundle field options
+   $options = [
+      'type' => 'list_string',
+      'label' => t('Update Calendar'),
+      'description' => t('Send updates to calendar for this log.'),
+      'allowed_values' => [
+        0 => t('On Update'),
+                1 => t('If Pending'),
+                2 => t('If Done'),
+                3 => t('Remove')
+      ],
+         // 'default_value' => 0,
+      'weight' => [
+        'form' => 10,
+        'view' => 10,
+      ],
+    ];
+    //Define calendar_update bundle field
+    $fieldDefinition = \Drupal::service('farm_field.factory')->bundleFieldDefinition($options);
+
+    //Install calendar_update bundle field
+    $update_manager = \Drupal::entityDefinitionUpdateManager();
+    $update_manager->installFieldStorageDefinition('calendar_update', 'log', 'farm_calendar_events', $fieldDefinition);
+
+    //Migrate old calendar base field values
+    $database = \Drupal::database();
+
+    $query = $database->select('log_field_data', 't')
+    ->fields('t', array('type', 'id', 'revision_id', 'langcode', 'calendar'))
+    ->isNotNull('t.calendar');
+    $query->addExpression('CAST(0 AS BIGINT)', 'delta');
+
+    $database->insert('log__calendar_update')
+    ->fields(['bundle', 'entity_id', 'revision_id', 'langcode', 'calendar_update_value', 'delta'])
+    ->from($query)
+    ->execute();
+
+    //Remove old calendar base field
+    $definition = $update_manager->getFieldStorageDefinition('calendar', 'log');
+    $update_manager->uninstallFieldStorageDefinition($definition);
+}
